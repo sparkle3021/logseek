@@ -9,15 +9,24 @@ env:
 
 jobs:
   build-windows:
-    name: Build Windows
+    name: Build Windows (${{ matrix.arch }})
     runs-on: windows-latest
+    strategy:
+      matrix:
+        include:
+          - arch: x64
+            target: x86_64-pc-windows-msvc
+            artifact: LogSeek-windows-x64.exe
+          - arch: x86
+            target: i686-pc-windows-msvc
+            artifact: LogSeek-windows-x86.exe
     steps:
       - uses: actions/checkout@v4
       
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
         with:
-          targets: x86_64-pc-windows-msvc
+          targets: ${{ matrix.target }}
       
       - name: Cache cargo registry
         uses: actions/cache@v4
@@ -26,23 +35,32 @@ jobs:
             ~/.cargo/registry
             ~/.cargo/git
             target
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          key: ${{ runner.os }}-${{ matrix.arch }}-cargo-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: |
-            ${{ runner.os }}-cargo-
+            ${{ runner.os }}-${{ matrix.arch }}-cargo-
       
       - name: Build
-        run: cargo build --release
+        run: cargo build --release --target ${{ matrix.target }}
       
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: LogSeek-windows
-          path: target/release/LogSeek.exe
+          name: ${{ matrix.artifact }}
+          path: target/${{ matrix.target }}/release/LogSeek.exe
           if-no-files-found: error
 
   build-linux:
-    name: Build Linux
+    name: Build Linux (${{ matrix.arch }})
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - arch: x64
+            target: x86_64-unknown-linux-gnu
+            artifact: LogSeek-linux-x64
+          - arch: x86
+            target: i686-unknown-linux-gnu
+            artifact: LogSeek-linux-x86
     steps:
       - uses: actions/checkout@v4
       
@@ -54,12 +72,13 @@ jobs:
             libwebkit2gtk-4.1-dev \
             libayatana-appindicator3-dev \
             librsvg2-dev \
-            libssl-dev
+            libssl-dev \
+            gcc-multilib
       
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
         with:
-          targets: x86_64-unknown-linux-gnu
+          targets: ${{ matrix.target }}
       
       - name: Cache cargo registry
         uses: actions/cache@v4
@@ -68,30 +87,41 @@ jobs:
             ~/.cargo/registry
             ~/.cargo/git
             target
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          key: ${{ runner.os }}-${{ matrix.arch }}-cargo-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: |
-            ${{ runner.os }}-cargo-
+            ${{ runner.os }}-${{ matrix.arch }}-cargo-
       
       - name: Build
-        run: cargo build --release
+        run: cargo build --release --target ${{ matrix.target }}
       
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: LogSeek-linux
-          path: target/release/LogSeek
+          name: ${{ matrix.artifact }}
+          path: target/${{ matrix.target }}/release/LogSeek
           if-no-files-found: error
 
   build-macos:
-    name: Build macOS
-    runs-on: macos-latest
+    name: Build macOS (${{ matrix.arch }})
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      matrix:
+        include:
+          - arch: x64
+            target: x86_64-apple-darwin
+            runner: macos-latest
+            artifact: LogSeek-macos-x64
+          - arch: arm64
+            target: aarch64-apple-darwin
+            runner: macos-latest
+            artifact: LogSeek-macos-arm64
     steps:
       - uses: actions/checkout@v4
       
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
         with:
-          targets: x86_64-apple-darwin
+          targets: ${{ matrix.target }}
       
       - name: Cache cargo registry
         uses: actions/cache@v4
@@ -100,18 +130,18 @@ jobs:
             ~/.cargo/registry
             ~/.cargo/git
             target
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          key: ${{ runner.os }}-${{ matrix.arch }}-cargo-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: |
-            ${{ runner.os }}-cargo-
+            ${{ runner.os }}-${{ matrix.arch }}-cargo-
       
       - name: Build
-        run: cargo build --release
+        run: cargo build --release --target ${{ matrix.target }}
       
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: LogSeek-macos
-          path: target/release/LogSeek
+          name: ${{ matrix.artifact }}
+          path: target/${{ matrix.target }}/release/LogSeek
           if-no-files-found: error
 
   upload-release:
@@ -126,10 +156,16 @@ jobs:
         with:
           path: artifacts
       
+      - name: List artifacts
+        run: ls -la artifacts/
+      
       - name: Upload to Release
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            artifacts/LogSeek-windows/LogSeek.exe
-            artifacts/LogSeek-linux/LogSeek
-            artifacts/LogSeek-macos/LogSeek
+            artifacts/LogSeek-windows-x64/LogSeek-windows-x64.exe
+            artifacts/LogSeek-windows-x86/LogSeek-windows-x86.exe
+            artifacts/LogSeek-linux-x64/LogSeek-linux-x64
+            artifacts/LogSeek-linux-x86/LogSeek-linux-x86
+            artifacts/LogSeek-macos-x64/LogSeek-macos-x64
+            artifacts/LogSeek-macos-arm64/LogSeek-macos-arm64
