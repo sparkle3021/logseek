@@ -187,12 +187,3 @@ logseek/
 ## 📄 许可证
 
 本项目基于 [MIT License](LICENSE) 开源。
-
----
-
-## 🙏 致谢
-
-- [egui](https://github.com/emilk/egui) — 立即模式 GUI 框架
-- [memmap2](https://github.com/RazrFalcon/memmap2) — 内存映射
-- [rayon](https://github.com/rayon-rs/rayon) — 并行计算
-- [notify](https://github.com/notify-rs/notify) — 文件监听
