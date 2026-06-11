@@ -1,0 +1,17 @@
+[package]
+name = "LogSeek"
+version.workspace = true
+edition.workspace = true
+
+[[bin]]
+name = "LogSeek"
+path = "src/main.rs"
+
+[build-dependencies]
+embed-resource = "2"
+
+[dependencies]
+eframe.workspace = true
+egui.workspace = true
+logseek-core.workspace = true
+logseek-ui.workspace = true

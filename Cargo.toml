@@ -1,0 +1,31 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/logseek-core",
+    "crates/logseek-ui",
+    "crates/logseek-app",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+
+[workspace.dependencies]
+# Core dependencies
+memmap2 = "0.9"
+rayon = "1.10"
+regex = "1.11"
+notify = "7.0"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+memchr = "2.7"
+
+# UI dependencies
+egui = "0.31"
+eframe = "0.31"
+egui_extras = "0.31"
+
+# Internal crates
+logseek-core = { path = "crates/logseek-core" }
+logseek-ui = { path = "crates/logseek-ui" }

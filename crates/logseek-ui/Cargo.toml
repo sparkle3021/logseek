@@ -1,0 +1,18 @@
+[package]
+name = "logseek-ui"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+egui.workspace = true
+eframe.workspace = true
+egui_extras.workspace = true
+logseek-core.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+regex.workspace = true
+rfd = "0.15"
+arboard = "3"
+
+[dev-dependencies]
+tempfile = "3"

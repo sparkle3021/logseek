@@ -1,0 +1,29 @@
+# Rust build artifacts
+/target/
+**/*.rs.bk
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Claude Code / AI tools
+.agents/
+.claude/
+.omo/
+.opencode/
+openspec/
+docs/superpowers
+skills-lock.json
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
