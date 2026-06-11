@@ -6,6 +6,7 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   build-windows:
@@ -42,11 +43,14 @@ jobs:
       - name: Build
         run: cargo build --release --target ${{ matrix.target }}
       
+      - name: Rename artifact
+        run: cp target/${{ matrix.target }}/release/LogSeek.exe ${{ matrix.artifact }}
+      
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.artifact }}
-          path: target/${{ matrix.target }}/release/LogSeek.exe
+          path: ${{ matrix.artifact }}
           if-no-files-found: error
 
   build-linux:
@@ -94,11 +98,14 @@ jobs:
       - name: Build
         run: cargo build --release --target ${{ matrix.target }}
       
+      - name: Rename artifact
+        run: cp target/${{ matrix.target }}/release/LogSeek ${{ matrix.artifact }}
+      
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.artifact }}
-          path: target/${{ matrix.target }}/release/LogSeek
+          path: ${{ matrix.artifact }}
           if-no-files-found: error
 
   build-macos:
@@ -137,11 +144,14 @@ jobs:
       - name: Build
         run: cargo build --release --target ${{ matrix.target }}
       
+      - name: Rename artifact
+        run: cp target/${{ matrix.target }}/release/LogSeek ${{ matrix.artifact }}
+      
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.artifact }}
-          path: target/${{ matrix.target }}/release/LogSeek
+          path: ${{ matrix.artifact }}
           if-no-files-found: error
 
   upload-release:
