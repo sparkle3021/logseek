@@ -6,6 +6,8 @@
 [![Release](https://img.shields.io/github/v/release/sparkle3021/logseek)](https://github.com/sparkle3021/logseek/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
+<img width="1474" height="826" alt="image" src="https://github.com/user-attachments/assets/6a0d389f-fe41-413a-b686-9f22edd4447f" />
+
 ---
 
 ## ✨ 功能特性
