@@ -1,11 +1,8 @@
 name: Build LogSeek
 
 on:
-  push:
-    branches: [main]
-    tags: ['v*']
-  pull_request:
-    branches: [main]
+  release:
+    types: [published]
 
 env:
   CARGO_TERM_COLOR: always
@@ -117,11 +114,10 @@ jobs:
           path: target/release/LogSeek
           if-no-files-found: error
 
-  create-release:
-    name: Create Release
+  upload-release:
+    name: Upload to Release
     needs: [build-windows, build-linux, build-macos]
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/v')
     permissions:
       contents: write
     steps:
@@ -130,13 +126,10 @@ jobs:
         with:
           path: artifacts
       
-      - name: Create Release
+      - name: Upload to Release
         uses: softprops/action-gh-release@v2
         with:
           files: |
             artifacts/LogSeek-windows/LogSeek.exe
             artifacts/LogSeek-linux/LogSeek
             artifacts/LogSeek-macos/LogSeek
-          generate_release_notes: true
-          draft: false
-          prerelease: false
